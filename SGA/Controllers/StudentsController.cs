@@ -2,21 +2,27 @@
 using Microsoft.EntityFrameworkCore;
 using SGA.Models;
 using SGA.Context;
+using System.ComponentModel;
+using AutoMapper;
+using SGA.ViewModels;
+using static SGA.ViewModels.StudentViewModel;
 
 namespace SGA.Controllers
 {
     public class StudentsController : Controller
     {
         private readonly AppDbContext _context;
-        public StudentsController(AppDbContext context)
+        private readonly IMapper _mapper;
+        public StudentsController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         // GET: Students
         public async Task<ActionResult> Index()
         {
             var model = await _context.Students.ToListAsync();
-           // var totalAverage = await _context.Students.Include(g => g.Grades).ToListAsync();
+            // var totalAverage = await _context.Students.Include(g => g.Grades).ToListAsync();
             // ViewBag.TotalGradesAverage = totalAverage;
             return View(model);
         }
@@ -34,7 +40,7 @@ namespace SGA.Controllers
             }
 
             var model = await _context.Students
-                .Include(s => s.StudentSubjects)
+                .Include(s => s.Grades)
                 .FirstOrDefaultAsync(s => s.Id == id);
 
             if (model == null)
@@ -42,44 +48,62 @@ namespace SGA.Controllers
                 return NotFound();
             }
 
-            var gradesBySubject = model.StudentSubjects
+            var gradesBySubject = model.Grades
                 .Select(ss => new
-             {
-            Subject = ss.Subject.ToString(), // Nome da disciplina (converte Enum para string)
-            Grade = ss.Grade,               // Nota
-            Attendance = model.Attendance // Frequência geral do aluno
-            })
+                {
+                    Subject = ss.Subject.ToString(), // Nome da disciplina (converte Enum para string)
+                    Grade = ss.Value,               // Nota
+                    Attendance = model.Attendance // Frequência geral do aluno
+                })
              .ToList();
 
             ViewBag.Grades = gradesBySubject;
             return View(model);
         }
-
         // GET: Students/Create
+        public IActionResult Create()
+        {
+            var model = new StudentViewModel
+            {
+                Grades = Enum.GetValues(typeof(Subjects))
+                             .Cast<Subjects>()
+                             .Select(subject => new DisciplineGrade
+                             {
+                                 SubjectName = subject.ToString(),
+                                 Grade = 0
+                             }).ToList()
+            };
+            ViewBag.Subjects = Enum.GetValues(typeof(Subjects)).Cast<Subjects>().ToList();
+            return View(model);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Student student)
+        public async Task<IActionResult> Create(StudentViewModel model)
         {
             if (ModelState.IsValid)
             {
+                // Mapear o ViewModel para o modelo Student
+                var student = _mapper.Map<Student>(model);
                 _context.Students.Add(student);
+                await _context.SaveChangesAsync(); // Salvar para obter o StudentId
 
-                var studentSubjects = Enum.GetValues(typeof(SubjectEnum))
-                    .Cast<SubjectEnum>()
-                    .Select(subject => new StudentSubject
-                    {
-                        Student = student,
-                        Subject = subject,
-                        Grade = 0,
-                        Attendance = 0
-                    });
+                // Mapear as notas para StudentSubjects
+                var studentSubjects = _mapper.Map<List<Grade>>(model.Grades);
+                foreach (var subject in studentSubjects)
+                {
+                    subject.StudentId = student.Id; // Associar o ID do estudante
+                }
 
-                _context.StudentSubjects.AddRange(studentSubjects);
+                _context.Grades.AddRange(studentSubjects);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+
+                return RedirectToAction(nameof(Index));
             }
-            return View();
+
+            return View(model);
         }
+
 
         // GET: Students/Edit/5
         public ActionResult Edit(int id)

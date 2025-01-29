@@ -1,15 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using static SGA.ViewModels.StudentViewModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace SGA.Models;
 
 public class Student
 {
     public int Id { get; set; }
-    [Display(Name = "Nome")]
+ 
     public string Name { get; set; }
-    public int SubjectId { get; set; }
-    [Display(Name = "Frequência")]
     public decimal Attendance { get; set; }
-    public ICollection<StudentSubject>? StudentSubjects { get; set; }
-
+    public ICollection<Grade> Grades { get; set; } = new List<Grade>();
+    public Subjects Subject { get; set; }
 }

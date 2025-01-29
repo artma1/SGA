@@ -1,40 +1,60 @@
-﻿@model SGA.Models.Student
+﻿@model SGA.ViewModels.StudentViewModel
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Adicionar Aluno</h1>
+<h1>Adicionar Aluno e Notas</h1>
 
-<h4>Aluno</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <!-- Nome do Estudante -->
+        <div class="col-md-3">
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Nome do Estudante</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+        </div>
+
+        <!-- Frequência Geral -->
+        <div class="col-md-3">
             <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Attendance" class="control-label"></label>
-                <input asp-for="Attendance" class="form-control" />
+                <label asp-for="Attendance" class="control-label">Frequência Geral</label>
+                <input asp-for="Attendance" type="number" class="form-control" min="0" max="100" />
                 <span asp-validation-for="Attendance" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <a asp-action="Index" class="btn btn-info">Voltar</a>
-                <input type="submit" value="Salvar" class="btn btn-success" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+
+    <h3>Notas por Disciplina</h3>
+
+    <div class="row">
+        @foreach (var subject in ViewBag.Subjects)
+        {
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="Grade_@subject" class="control-label">@subject</label>
+                    <input type="number" name="Grades[@subject].Grade" class="form-control" min="0" max="10" step="1" />
+                </div>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+
+<hr />
+
+<a href="@Url.Action("Index", "Students")" class="btn btn-secondary">Back to List</a>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
