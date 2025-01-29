@@ -1,0 +1,25 @@
+﻿@model SGA.Models.Subject
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalhes</h1>
+
+    <h4>Veículo</h4>
+    <hr />
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SubjectName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GradesAverage)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a> |
+    <a asp-action="Index" class="btn btn-info">Voltar</a>
+</div>

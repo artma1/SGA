@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Sistema de Gestão Acadêmica</h1>
+    <p>Escolha uma opção para consultar:</p>
+
+    <!-- Cards para cada opção -->
+    <div class="row justify-content-center mt-4">
+        <!-- Card de Estudantes -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Consulta de Estudantes</h5>
+                    <p class="card-text">Consulte a lista de estudantes.</p>
+                    <a href="/Students" class="btn btn-primary">Ver Estudantes</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Turmas -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Consulta de Turmas</h5>
+                    <p class="card-text">Consulte as turmas disponíveis.</p>
+                    <a href="/StudentClasses" class="btn btn-primary">Ver Turmas</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Disciplinas -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Consulta de Disciplinas</h5>
+                    <p class="card-text">Consulte as disciplinas disponíveis.</p>
+                    <a href="/Subjects" class="btn btn-primary">Ver Disciplinas</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

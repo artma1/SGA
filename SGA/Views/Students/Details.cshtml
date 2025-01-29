@@ -1,0 +1,30 @@
+﻿@model SGA.Models.Student
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detalhes do Estudante</h1>
+<p>Nome: @Model.Name</p>
+<p>Frequência: @Model.Attendance%</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Disciplina</th>
+            <th>Nota</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var grade in ViewBag.Grade)
+        {
+            <tr>
+                <td>@grade.Subject</td>
+                <td>@grade.Grade</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Editar</a> |
+    <a asp-action="Index" class="btn btn-info">Voltar</a>
+</div>
