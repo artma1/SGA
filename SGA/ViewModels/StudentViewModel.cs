@@ -11,7 +11,7 @@ namespace SGA.ViewModels
         public string Name { get; set; }
         [Display(Name = "Frequência")]
         public decimal Attendance { get; set; }
-        public Subjects Subject { get; set; }
+        
 
         public List<DisciplineGrade> Grades { get; set; } = new List<DisciplineGrade>();
 
@@ -20,6 +20,8 @@ namespace SGA.ViewModels
             public int SubjectId { get; set; }
             public string SubjectName { get; set; }
             public double Grade { get; set; }
+
+            public Subjects Subject { get; set; }
         }
 
         public enum Subjects

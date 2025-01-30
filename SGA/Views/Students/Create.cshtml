@@ -7,7 +7,6 @@
 
 <hr />
 
-
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()
 
@@ -34,15 +33,22 @@
     <h3>Notas por Disciplina</h3>
 
     <div class="row">
-        @foreach (var subject in ViewBag.Subjects)
-        {
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label for="Grade_@subject" class="control-label">@subject</label>
-                    <input type="number" name="Grades[@subject].Grade" class="form-control" min="0" max="10" step="1" />
+        <div class="row">
+            @foreach (var subject in ViewBag.Subjects)
+            {
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="Grade_@subject" class="control-label">@subject</label>
+                        <input type="number"
+                               id="Grade_@subject"
+                               name="Grades[@subject].Grade"
+                               class="form-control"
+                               min="0" max="10" step="1"
+                               value="@Model.Grades.FirstOrDefault(g => g.Subject == subject)?.Grade" />  <!-- Preenchendo a nota com o valor da disciplina -->
+                    </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>

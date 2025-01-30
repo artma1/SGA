@@ -6,6 +6,7 @@ using System.ComponentModel;
 using AutoMapper;
 using SGA.ViewModels;
 using static SGA.ViewModels.StudentViewModel;
+using Microsoft.IdentityModel.Tokens;
 
 namespace SGA.Controllers
 {
@@ -21,9 +22,8 @@ namespace SGA.Controllers
         // GET: Students
         public async Task<ActionResult> Index()
         {
-            var model = await _context.Students.ToListAsync();
-            // var totalAverage = await _context.Students.Include(g => g.Grades).ToListAsync();
-            // ViewBag.TotalGradesAverage = totalAverage;
+            var students = await _context.Students.ToListAsync();
+            var model = _mapper.Map<List<StudentViewModel>>(students);
             return View(model);
         }
 
@@ -73,8 +73,11 @@ namespace SGA.Controllers
                                  Grade = 0
                              }).ToList()
             };
-            ViewBag.Subjects = Enum.GetValues(typeof(Subjects)).Cast<Subjects>().ToList();
-            return View(model);
+
+             ViewBag.Subjects = Enum.GetValues(typeof(Subjects)).Cast<Subjects>().ToList();
+            
+           // ViewBag.Subjects = new List<string> { "Cálculo-1", "Economia-2", "Geometria-3", "Filosofia-4", "Projetos-5" };
+            return View(new StudentViewModel());
         }
 
         [HttpPost]
@@ -83,26 +86,31 @@ namespace SGA.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Mapear o ViewModel para o modelo Student
-                var student = _mapper.Map<Student>(model);
-                _context.Students.Add(student);
-                await _context.SaveChangesAsync(); // Salvar para obter o StudentId
 
-                // Mapear as notas para StudentSubjects
-                var studentSubjects = _mapper.Map<List<Grade>>(model.Grades);
-                foreach (var subject in studentSubjects)
+                if (string.IsNullOrWhiteSpace(model.Name))
                 {
-                    subject.StudentId = student.Id; // Associar o ID do estudante
+                    ModelState.AddModelError("Name", "O nome não pode ser nulo ou vazio.");
+                    return View(model);
                 }
 
-                _context.Grades.AddRange(studentSubjects);
-                await _context.SaveChangesAsync();
+                var student = new StudentViewModel()
+                {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Attendance = model.Attendance,
+                    Grades = model.Grades
+                };
+
+                _context.Students.Add(model);
+                await _context.SaveChangesAsync(); 
 
                 return RedirectToAction(nameof(Index));
             }
 
             return View(model);
         }
+
+
 
 
         // GET: Students/Edit/5
