@@ -16,9 +16,10 @@ namespace SGA.ViewModels
     public List<DisciplineGrade> Grades { get; set; } = new List<DisciplineGrade>();
     public class DisciplineGrade
     {
+      public int Grade {  get; set; }
       public int SubjectId { get; set; }
       public string SubjectName { get; set; }
-      public double Grade { get; set; }
+      public double GradeValue { get; set; }
       public Subjects Subject { get; set; }
     }
 

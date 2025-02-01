@@ -71,7 +71,6 @@ namespace SGA.Controllers
                        .Select(subject => new DisciplineGrade
                        {
                          SubjectName = subject.ToString(),
-                         Grade = 0
                        }).ToList()
       };
 
@@ -89,17 +88,22 @@ namespace SGA.Controllers
       {
         return View(model);
       }
-      var grade = new Grade()
+
+      var grades = model.Grades.Select(d => new Grade
       {
         StudentId = model.Id,
-      };
+        Value = model.Grades,      //corrigir
+        Subject = d.Subject
+      }).ToList();
+
+      _context.Grades.AddRange(grades);
 
       var student = new Student()
       {
         Id = model.Id,
         Name = model.Name,
         Attendance = model.Attendance,
-        //Grades = model.Grades
+        Grades = grades 
       };
 
       _context.Students.Add(student);
@@ -107,8 +111,6 @@ namespace SGA.Controllers
 
       return RedirectToAction(nameof(Index));
     }
-
-
 
 
     // GET: Students/Edit/5
