@@ -9,6 +9,6 @@ public class Student
  
     public string Name { get; set; }
     public decimal Attendance { get; set; }
-    public ICollection<Grade> Grades { get; set; } = new List<Grade>();
+    public ICollection<Grade>? Grades { get; set; }
     public Subjects Subject { get; set; }
 }
