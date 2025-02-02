@@ -68,34 +68,12 @@ namespace SGA.Controllers
         return NotFound();
       }
 
-      //var gradesBySubject = model.Grades
-      //    .Select(ss => new
-      //    {
-      //      Subject = ss.Subject.ToString(), // Nome da disciplina (converte Enum para string)
-      //      Grade = ss.Value,               // Nota
-      //      Attendance = model.Attendance // Frequência geral do aluno
-      //    })
-      // .ToList();
-
-      //ViewBag.Grades = gradesBySubject;
       return View(model);
     }
     // GET: Students/Create
     public IActionResult Create()
     {
-      //var model = new StudentViewModel
-      //{
-      //  Grades = Enum.GetValues(typeof(Subjects))
-      //                 .Cast<Subjects>()
-      //                 .Select(subject => new Grade
-      //                 {
-      //                   SubjectId = subject,
-      //                 }).ToList()
-      //};
-
       ViewBag.Subjects = Enum.GetValues(typeof(Subjects)).Cast<Subjects>().ToList();
-
-      // ViewBag.Subjects = new List<string> { "Cálculo-1", "Economia-2", "Geometria-3", "Filosofia-4", "Projetos-5" };
       return View(new StudentViewModel());
     }
 
@@ -114,13 +92,13 @@ namespace SGA.Controllers
       foreach (Subjects subjects in Enum.GetValues(typeof(Subjects)))
       {
         enumId++;
-          var oneGrade = new Grade
-          {
-            StudentId = model.Id,
-            SubjectId = enumId,
-            Value = model.GradeValues[enumId - 1],
+        var oneGrade = new Grade
+        {
+          StudentId = model.Id,
+          SubjectId = enumId,
+          Value = model.GradeValues[enumId - 1],
 
-          };
+        };
         AverageGrade += oneGrade.Value;
         grades.Add(oneGrade);
       }
@@ -131,7 +109,7 @@ namespace SGA.Controllers
         Name = model.Name,
         Attendance = model.Attendance,
         Grades = grades,
-        AverageGrades = AverageGrade/5,
+        AverageGrades = AverageGrade / 5,
       };
 
       _context.Students.Add(student);
@@ -169,18 +147,25 @@ namespace SGA.Controllers
     }
 
     // POST: Students/Delete/5
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Delete(int id, IFormCollection collection)
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> Delete(int? Id)
     {
-      try
+      if (Id == null)
       {
-        return RedirectToAction(nameof(Index));
+        return NotFound();
       }
-      catch
+
+      var dados = await _context.Students.FindAsync(Id);
+      if (dados == null)
       {
-        return View();
+        return NotFound();
       }
+
+      _context.Students.Remove(dados);
+      await _context.SaveChangesAsync();
+      TempData["SuccessMessage"] = "Registro apagado com sucesso!";
+
+      return RedirectToAction("Index"); ;
     }
   }
 }

@@ -1,5 +1,4 @@
 ﻿using static SGA.ViewModels.StudentViewModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace SGA.Models;
 
