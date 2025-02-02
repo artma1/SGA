@@ -10,27 +10,5 @@ public class Student
   public decimal Attendance { get; set; }
   public ICollection<Grade>? Grades { get; set; }
   public Subjects Subject { get; set; }
-  public int AverageGrades
-  {
-    get
-    {
-      return GetAverageGrades();
-    }
-  }
-
-  private int GetAverageGrades()
-  {
-    int Average = 0;
-    if (Grades == null)
-    {
-      return 0;
-    }
-
-    foreach(var grade in Grades)
-    {
-      Average += + grade.Value;
-    }
-
-    return Average;
-  }
+  public int AverageGrades { get; set; }
 }

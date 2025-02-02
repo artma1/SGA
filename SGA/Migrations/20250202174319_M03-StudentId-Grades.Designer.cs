@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SGA.Context;
 
@@ -10,9 +11,11 @@ using SGA.Context;
 namespace SGA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250202174319_M03-StudentId-Grades")]
+    partial class M03StudentIdGrades
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,9 +61,6 @@ namespace SGA.Migrations
 
                     b.Property<decimal>("Attendance")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("AverageGrades")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

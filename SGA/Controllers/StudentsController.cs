@@ -2,12 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using SGA.Models;
 using SGA.Context;
-using System.ComponentModel;
 using AutoMapper;
 using SGA.ViewModels;
 using static SGA.ViewModels.StudentViewModel;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SGA.Controllers
 {
@@ -15,6 +12,8 @@ namespace SGA.Controllers
   {
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
+    private Subjects subject;
+
     public StudentsController(AppDbContext context, IMapper mapper)
     {
       _context = context;
@@ -23,11 +22,31 @@ namespace SGA.Controllers
     // GET: Students
     public async Task<ActionResult> Index()
     {
-      var students = await _context.Students.ToListAsync();
+      var students = await _context.Students
+        .OrderByDescending(st => st.AverageGrades)
+        .ToListAsync();
       var model = _mapper.Map<List<StudentViewModel>>(students);
       return View(model);
     }
 
+    public async Task<ActionResult> IndexAttendance()
+    {
+      var students = await _context.Students.Where(st => st.Attendance < 75)
+        .OrderByDescending(st => st.AverageGrades)
+        .ToListAsync();
+      var model = _mapper.Map<List<StudentViewModel>>(students);
+      return View(model);
+    }
+
+    public async Task<ActionResult> IndexAboveAverage()
+    {
+      double totalAverage = await _context.Students.AverageAsync(st => st.AverageGrades);
+      var students = await _context.Students.Where(st => st.AverageGrades > totalAverage)
+        .OrderByDescending(st => st.AverageGrades)
+        .ToListAsync();
+      var model = _mapper.Map<List<StudentViewModel>>(students);
+      return View(model);
+    }
     // GET: Students/Details/5
     public async Task<ActionResult> Details(int? id)
     {
@@ -49,30 +68,30 @@ namespace SGA.Controllers
         return NotFound();
       }
 
-      var gradesBySubject = model.Grades
-          .Select(ss => new
-          {
-            Subject = ss.Subject.ToString(), // Nome da disciplina (converte Enum para string)
-            Grade = ss.Value,               // Nota
-            Attendance = model.Attendance // Frequência geral do aluno
-          })
-       .ToList();
+      //var gradesBySubject = model.Grades
+      //    .Select(ss => new
+      //    {
+      //      Subject = ss.Subject.ToString(), // Nome da disciplina (converte Enum para string)
+      //      Grade = ss.Value,               // Nota
+      //      Attendance = model.Attendance // Frequência geral do aluno
+      //    })
+      // .ToList();
 
-      ViewBag.Grades = gradesBySubject;
+      //ViewBag.Grades = gradesBySubject;
       return View(model);
     }
     // GET: Students/Create
     public IActionResult Create()
     {
-      var model = new StudentViewModel
-      {
-        Grades = Enum.GetValues(typeof(Subjects))
-                       .Cast<Subjects>()
-                       .Select(subject => new DisciplineGrade
-                       {
-                         SubjectName = subject.ToString(),
-                       }).ToList()
-      };
+      //var model = new StudentViewModel
+      //{
+      //  Grades = Enum.GetValues(typeof(Subjects))
+      //                 .Cast<Subjects>()
+      //                 .Select(subject => new Grade
+      //                 {
+      //                   SubjectId = subject,
+      //                 }).ToList()
+      //};
 
       ViewBag.Subjects = Enum.GetValues(typeof(Subjects)).Cast<Subjects>().ToList();
 
@@ -89,21 +108,30 @@ namespace SGA.Controllers
         return View(model);
       }
 
-      var grades = model.Grades.Select(d => new Grade
+      var grades = new List<Grade>();
+      int enumId = 0;
+      int AverageGrade = 0;
+      foreach (Subjects subjects in Enum.GetValues(typeof(Subjects)))
       {
-        StudentId = model.Id,
-        Value = model.Grades,      //corrigir
-        Subject = d.Subject
-      }).ToList();
+        enumId++;
+          var oneGrade = new Grade
+          {
+            StudentId = model.Id,
+            SubjectId = enumId,
+            Value = model.GradeValues[enumId - 1],
 
-      _context.Grades.AddRange(grades);
+          };
+        AverageGrade += oneGrade.Value;
+        grades.Add(oneGrade);
+      }
 
       var student = new Student()
       {
         Id = model.Id,
         Name = model.Name,
         Attendance = model.Attendance,
-        Grades = grades 
+        Grades = grades,
+        AverageGrades = AverageGrade/5,
       };
 
       _context.Students.Add(student);

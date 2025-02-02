@@ -3,12 +3,13 @@
 namespace SGA.Models
 {
 
-    public class Grade
-    {
-        public int Id { get; set; }
-        public int StudentId { get; set; }
-        public int Value {  get; set; }
-        public Subjects Subject { get; set; }
-    }
+  public class Grade
+  {
+    public int Id { get; set; }
+    public int StudentId { get; set; }
+    public int Value { get; set; }
+    public int SubjectId { get; set; }
+    public Subjects subject { get; set; }
+  }
 
 }

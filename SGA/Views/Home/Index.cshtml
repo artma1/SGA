@@ -1,42 +1,45 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+  ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Sistema de Gestão Acadêmica</h1>
-    <p>Escolha uma opção para consultar:</p>
-    <br />
-    <br />
-    <!-- Cards para cada opção -->
-    <div class="row justify-content-center mt-4">
-        <!-- Card de Estudantes -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Consulta de Estudantes</h5>
-                    <a href="/Students" class="btn btn-primary">Ver Estudantes</a>
-                </div>
-            </div>
+  <h1 class="display-4">Sistema de Gestão Acadêmica</h1>
+  <p>Escolha uma opção para consultar:</p>
+  <br />
+  <br />
+  <!-- Cards para cada opção -->
+  <div class="row justify-content-center mt-4">
+    <!-- Card de Estudantes -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Todos os Alunos</h5>
+          <p class="card-text"> Clique no botão abaixo para ver todos os alunos, suas médias e frequências.</p>
+          <a href="/Students" class="btn btn-primary">Alunos</a>
         </div>
-
-        <!-- Card de Turmas -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Alunos Acima da Média</h5>
-                    <a href="/Students" class="btn btn-primary">Ver Turmas</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card de Disciplinas -->
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Frequência dos Alunos</h5>
-                    <a href="/Students" class="btn btn-primary">Ver Disciplinas</a>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+
+    <!-- Card de Turmas -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Alunos Acima da Média</h5>
+          <p class="card-text">Aqui você pode ver a lista de alunos que tem média acima da média da turma. Clique no botão abaixo para mais detalhes.</p>
+          <a href="/Students/IndexAboveAverage" class="btn btn-primary">Ver Alunos</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card de Disciplinas -->
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Frequência</h5>
+          <p class="card-text">Aqui você pode ver a lista de alunos que tem frequência abaixo de 75%. Clique no botão abaixo para mais detalhes.</p>
+          <a href="/Students/IndexAttendance" class="btn btn-primary">Frequência</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

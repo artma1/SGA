@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using SGA.Models;
+﻿using SGA.Models;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,15 +12,9 @@ namespace SGA.ViewModels
     [Display(Name = "Frequência")]
     [Range(0, 100, ErrorMessage = "Insira uma frequência entre 0 e 100 (%).")]
     public decimal Attendance { get; set; }
-    public List<DisciplineGrade> Grades { get; set; } = new List<DisciplineGrade>();
-    public class DisciplineGrade
-    {
-      public int Grade {  get; set; }
-      public int SubjectId { get; set; }
-      public string SubjectName { get; set; }
-      public double GradeValue { get; set; }
-      public Subjects Subject { get; set; }
-    }
+    [Display(Name = "Média")]
+    public int AverageGrades { get; set; }
+    public List<int> GradeValues { get; set; } = new List<int>();
 
     public enum Subjects
     {
